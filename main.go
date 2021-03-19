@@ -55,8 +55,8 @@ func hello(c echo.Context) error {
 
 func loadConfiguration() {
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-	viper.SetDefault("authentication.baseUrl","")
-	viper.ReadConfig(strings.NewReader(s))
+	viper.SetConfigType("yaml")
+	viper.ReadConfig(strings.NewReader(s)) // Reading defaults
 	viper.SetConfigName("config")
 	viper.AddConfigPath(".")
 	viper.ReadInConfig()
