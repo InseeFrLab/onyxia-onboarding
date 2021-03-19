@@ -6,26 +6,18 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strings"
 
 	keycloak "github.com/baba2k/echo-keycloak"
 	"github.com/dgrijalva/jwt-go"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/spf13/viper"
 )
-
-//go:embed config.yaml
-var s string
-var config configuration
 
 func main() {
 	loadConfiguration()
 	initKubernetesClient()
 
-  
-	
 	e := echo.New()
 
 	// Middleware
@@ -53,21 +45,3 @@ func hello(c echo.Context) error {
 			fmt.Sprintf("There are %d pods in the cluster", countPods())+" Hello, User! Your claims are:\n%+v\n", string(prettyJSONClaims)))
   }
 
-func loadConfiguration() {
-	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-	viper.SetConfigType("yaml")
-	viper.ReadConfig(strings.NewReader(s)) // Reading defaults
-	viper.SetConfigName("config")
-	viper.AddConfigPath(".")
-	viper.ReadInConfig()
-	viper.SetConfigName("config.local")
-	viper.AddConfigPath(".")
-	viper.AutomaticEnv()
-	viper.MergeInConfig()
-
-	err := viper.Unmarshal(&config)
-	log.Println(&config)
-	if err != nil {
-		panic(err)
-	}
-}
