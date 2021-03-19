@@ -1,11 +1,7 @@
 package main
 
 import (
-	_ "embed"
-	"encoding/json"
-	"fmt"
 	"log"
-	"net/http"
 
 	keycloak "github.com/baba2k/echo-keycloak"
 	"github.com/dgrijalva/jwt-go"
@@ -14,11 +10,12 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
+var e = echo.New()
+
 func main() {
 	loadConfiguration()
 	initKubernetesClient()
 
-	e := echo.New()
 
 	// Middleware
 	e.Use(middleware.Logger())
@@ -26,22 +23,25 @@ func main() {
 	
 	log.Println("Using authentication from "+config.Authentication.BaseUrl+" realm "+config.Authentication.Realm)
 	e.Use(keycloak.Keycloak(config.Authentication.BaseUrl, config.Authentication.Realm))
+	e.Use(extractUsername)
 
-	// Routes
-	e.GET("/", hello)
 
+	addKubernetesController()
 
 	log.Println("Onyxia onboarding ...")
 	// Start server
 	e.Logger.Fatal(e.Start(":8080"))
 }
 
-// Handler
-func hello(c echo.Context) error {
-	token := c.Get("user").(*jwt.Token)
+func extractUsername(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		token := c.Get("user").(*jwt.Token)
 		claims := token.Claims.(*jwt.MapClaims)
-		prettyJSONClaims, _ := json.MarshalIndent(claims, "", "   ")
-		return c.String(http.StatusOK, fmt.Sprintf(
-			fmt.Sprintf("There are %d pods in the cluster", countPods())+" Hello, User! Your claims are:\n%+v\n", string(prettyJSONClaims)))
-  }
+		username := (*claims)["preferred_username"]
+		c.Set("username", username)
+		return next(c)
+	}
+}
+
+
 

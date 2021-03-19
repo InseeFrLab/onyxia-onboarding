@@ -44,6 +44,11 @@ func initKubernetesClient() {
 	}
 }
 
+func namespaceExists(namespace string) bool {
+	_, err := clientset.CoreV1().Namespaces().Get(context.TODO(),namespace,metav1.GetOptions{})
+	return err == nil
+}
+
 func countPods() int {
 	pods, err := clientset.CoreV1().Pods("").List(context.TODO(), metav1.ListOptions{})
 		if err != nil {
