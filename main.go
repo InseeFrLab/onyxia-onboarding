@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "embed"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -15,6 +16,8 @@ import (
 	"github.com/spf13/viper"
 )
 
+//go:embed config.yaml
+var s string
 var config configuration
 
 func main() {
@@ -28,7 +31,7 @@ func main() {
 	// Middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-
+	
 	log.Println("Using authentication from "+config.Authentication.BaseUrl+" realm "+config.Authentication.Realm)
 	e.Use(keycloak.Keycloak(config.Authentication.BaseUrl, config.Authentication.Realm))
 
@@ -52,15 +55,18 @@ func hello(c echo.Context) error {
 
 func loadConfiguration() {
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-	viper.AutomaticEnv()
+	viper.SetDefault("authentication.baseUrl","")
+	viper.ReadConfig(strings.NewReader(s))
 	viper.SetConfigName("config")
 	viper.AddConfigPath(".")
 	viper.ReadInConfig()
 	viper.SetConfigName("config.local")
 	viper.AddConfigPath(".")
+	viper.AutomaticEnv()
 	viper.MergeInConfig()
 
 	err := viper.Unmarshal(&config)
+	log.Println(&config)
 	if err != nil {
 		panic(err)
 	}
