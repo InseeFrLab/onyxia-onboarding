@@ -18,7 +18,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: build
-        run: CGO_ENABLED=0 go build . -o onyxia-onboarding
+        run: go build -o onyxia-onboarding .
+        env:
+          CGO_ENABLED: 0
       # Docker build & push
       - name: Docker meta
         id: docker_meta
