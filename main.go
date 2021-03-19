@@ -28,6 +28,7 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
+	fmt.Println("Using authentication from "+config.Authentication.BaseUrl+" realm "+config.Authentication.Realm)
 	e.Use(keycloak.Keycloak(config.Authentication.BaseUrl, config.Authentication.Realm))
 
 	// Routes
