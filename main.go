@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
@@ -28,14 +29,14 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	fmt.Println("Using authentication from "+config.Authentication.BaseUrl+" realm "+config.Authentication.Realm)
+	log.Println("Using authentication from "+config.Authentication.BaseUrl+" realm "+config.Authentication.Realm)
 	e.Use(keycloak.Keycloak(config.Authentication.BaseUrl, config.Authentication.Realm))
 
 	// Routes
 	e.GET("/", hello)
 
 
-	fmt.Println("Onyxia onboarding ...")
+	log.Println("Onyxia onboarding ...")
 	// Start server
 	e.Logger.Fatal(e.Start(":8080"))
 }
