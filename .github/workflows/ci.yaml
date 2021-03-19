@@ -46,7 +46,7 @@ jobs:
           # Use tags computed before and also latest if on master
           tags: |
             ${{ steps.docker_meta.outputs.tags }}
-            ${{ github.ref == 'refs/heads/master' && 'inseefrlab/onyxia-onboarding:latest' || '' }}
+            ${{ github.ref == 'refs/heads/main' && 'inseefrlab/onyxia-onboarding:latest' || '' }}
           labels: ${{ steps.docker_meta.outputs.labels }}
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
