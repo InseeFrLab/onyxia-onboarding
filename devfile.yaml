@@ -39,7 +39,7 @@ commands:
   - name: "Run :)"
     actions:
       - type: exec
-        component: go-cli
+        component: go
         command: "go run ."
         workdir: "${CHE_PROJECTS_ROOT}/onyxia-onboarding"
   - name: Debug current file
