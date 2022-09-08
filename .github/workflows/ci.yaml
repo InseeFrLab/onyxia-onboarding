@@ -8,7 +8,7 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            go-version: 1.16.x
+            go-version: 1.19.x
     runs-on: ${{ matrix.os }}
     steps:
       - name: Install Go
