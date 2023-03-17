@@ -1,6 +1,6 @@
 module io.insee.dev/onyxia-onboarding
 
-go 1.19
+go 1.20
 
 require (
 	github.com/baba2k/echo-keycloak v0.1.0
